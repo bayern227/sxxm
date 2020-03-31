@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ssm.employee.dao.JobInfoMapper">
+	<resultMap type="jobInfo" id="jobMap" autoMapping="true">
+		<result column="JOB_TITLE_CODE" property="title.code"/>
+		<result column="titlename" property="title.name"/>
+		<result column="DELIVERY_CAPABILITY_CODE" property="capability.code"/>
+		<result column="capName" property="capability.name"/>
+		<result column="CONFIRM_STATUS" property="confirm.code"/>
+		<result column="confirmName" property="confirm.name"/>
+		<result column="JOB_POSITION_CODE" property="position.code"/>
+		<result column="posName" property="position.name"/>
+	</resultMap>
+	<select id="getjobInfosByEid" resultMap="jobMap" >
+		SELECT EID,JOB_TITLE_CODE,ti.name titlename,JOB_LEVEL_CODE,DELIVERY_CAPABILITY_CODE,cap.name capName,JOB_POSITION_CODE,pos.name posname,CONFIRM_STATUS,con.name confirmName,REJECT_REASON,INS_USER_ID,INS_TIMESTAMP,UPD_USER_ID,UPD_TIMESTAMP
+		FROM emp_job_info j
+		INNER JOIN (SELECT CATEGORY_CODE,CODE,NAME FROM cd_master_m WHERE CATEGORY_CODE='1010') ti ON ti.code = j.JOB_TITLE_CODE
+		INNER JOIN (SELECT CATEGORY_CODE,CODE,NAME FROM cd_master_m WHERE CATEGORY_CODE='1040') cap ON cap.code = j.DELIVERY_CAPABILITY_CODE
+		INNER JOIN (SELECT CATEGORY_CODE,CODE,NAME FROM cd_master_m WHERE CATEGORY_CODE='0060') con ON con.code = j.CONFIRM_STATUS
+		INNER JOIN (SELECT CATEGORY_CODE,CODE,NAME FROM cd_master_m WHERE CATEGORY_CODE='1050') pos ON pos.code = j.JOB_POSITION_CODE
+		WHERE eid = #{eid}
+	</select>
+</mapper>
