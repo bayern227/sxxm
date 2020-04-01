@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ssm.employee.dao.UserInfoMapper">
+	<resultMap type="userInfo" id="userMap" autoMapping="true">
+		<id column="USER_NAME" property="username"/>
+		<result column="DELETE_FLAG" property="deleteFlag"/>
+		<result column="INS_USER_ID" property="insUserid"/>
+		<result column="INS_TIMESTAMP" property="insTimestamp"/>
+		<result column="UPD_USER_ID" property="updUserid"/>
+		<result column="UPD_TIMESTAMP" property="updTimestamp"/>
+		<result column="role_code" property="roleCode"/>
+		<result column="name" property="roleName"/>
+	</resultMap>
+
+
+	<select id="getUserByLogin" resultMap="userMap">
+select  distinct user_name, password, user.eid, delete_flag, 
+		       `user`.ins_user_id,  `user`.ins_timestamp,  `user`.upd_user_id, `user`.upd_timestamp,
+		       role.role_code,m.name
+		from user_info user
+		inner join emp_role_info role on user.eid = role.eid
+		inner join (select CATEGORY_CODE, code, name from cd_master_m where CATEGORY_CODE = '0040') m
+		on m.code = role.role_code
+		where user_name = #{username} and password = password(#{password})
+		and DELETE_FLAG = 1
+	</select>
+</mapper>
